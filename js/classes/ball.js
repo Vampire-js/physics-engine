@@ -1,7 +1,7 @@
 class Ball {
     constructor(x, y, r) {
 
-        this.gravity = 0.05
+        this.gravity = 0.01
 
         this.position = new Vector(x, y)
         this.r = r
@@ -28,8 +28,7 @@ class Ball {
         c.fillStyle = this.color
         c.fill()
 
-        this.velocity.draw(this.position.x, this.position.y, 40, "green")
-        this.acc.draw(this.position.x, this.position.y, 40, "red")
+        this.velocity.draw(this.position.x, this.position.y, 40, "red")
     }
     startRandomMotion(){
         this.velocity.x = Math.random()*[-1,1][Math.round(Math.random())]
@@ -54,19 +53,35 @@ class Ball {
 
     }
 
-    collideWall(other){
-       let v = other.start.sub(this.position)
-       let normal = other.dir.normal().unit()
-       let d = v.dot(normal)
-
-       if(d <= this.r + this.velocity.dot(normal)){
-        let p = this.velocity.dot(normal) * 2 / (this.mass)
-            
-        this.velocity = this.velocity.sub(normal.mult(p * this.mass)).mult(0.5)
-
-       }
-
+    collideWall(wall) {
+        // Define the wall segment as a vector
+        let wallVector = wall.end.sub(wall.start);
+        let ballToWallStart = this.position.sub(wall.start);
+    
+        // Project the ball’s position onto the wall segment
+        let projectionLength = ballToWallStart.dot(wallVector.unit());
+        let wallLength = wallVector.mag();
+    
+        // Check if the projection is within the bounds of the wall segment
+        if (projectionLength >= 0 && projectionLength <= wallLength) {
+            // Find the closest point on the wall to the ball
+            let closestPoint = wall.start.add(wallVector.unit().mult(projectionLength));
+    
+            // Calculate the vector from the ball to this closest point
+            let ballToClosestPoint = this.position.sub(closestPoint);
+            let distanceToWall = ballToClosestPoint.mag();
+    
+            // Check if the ball is within collision range
+            if (distanceToWall <= this.r) {
+                // Resolve the collision by moving the ball out and inverting velocity along the normal
+                let collisionNormal = ballToClosestPoint.unit();
+                this.position = closestPoint.add(collisionNormal.mult(this.r));
+                this.velocity = this.velocity.sub(collisionNormal.mult(2 * this.velocity.dot(collisionNormal))).mult(0.8); // Damping factor
+            }
+        }
     }
+    
+    
     setColor(color){
         this.color = color
     }
@@ -104,31 +119,32 @@ class Ball {
             this.velocity.y = 0
         }
     }
+
     update() {
-        this.draw()
-
-
-
-        this.position.x += this.velocity.x
-        this.position.y += this.velocity.y
-        
-        this.velocity.x += this.acc.x
-        this.velocity.y += this.acc.y
-
-        this.acc.y = this.gravity
-
-        if(this.randomMotion){
-            this.startRandomMotion()
-        }else{
-            if(this.player){
-                this.move()
-
-            }
-            
+        this.draw();
+    
+        // Check and resolve collisions with all walls before updating position
+        for (let wall of walls) {
+            this.collideWall(wall);
         }
-
-      
-
+    
+        // Apply position updates based on velocity
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
+    
+        // Update velocity with acceleration
+        this.velocity.x += this.acc.x;
+        this.velocity.y += this.acc.y;
+    
+        // Gravity on the y-axis
+        this.acc.y = this.gravity;
+    
+        if (this.randomMotion) {
+            this.startRandomMotion();
+        } else if (this.player) {
+            this.move();
+        }
     }
-
+    
+    
 }
