@@ -16,6 +16,9 @@ class Vector {
     mult(n) {
         return new Vector(n * this.x, n * this.y)
     }
+    normal(){
+        return new Vector(-this.y, this.x)
+    }
     unit(){
         let v = new Vector(this.x, this.y)
         let mag = this.mag()
@@ -26,11 +29,19 @@ class Vector {
 
         return v
     }
+    set(v){
+        this.x = v.x
+        this.y = v.y
+    }
+    dot(v){
+        return this.x*v.x + this.y*v.y
+    }
     draw(start_x, start_y, n, color) {
         c.beginPath()
         c.moveTo(start_x, start_y)
         c.lineTo(start_x + this.x * n, start_y + this.y * n)
         c.strokeStyle = color
+        c.strokeWidth = 10
         c.stroke()
     }
 }

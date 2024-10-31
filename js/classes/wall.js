@@ -1,5 +1,5 @@
 class Wall{
-    constructor(sx, sy, ex, ey , angle){
+    constructor(sx, sy, ex, ey , angle = 0){
         this.start = new Vector(sx, sy)
         this.end = new Vector(ex, ey)
         this.angle = 0
@@ -15,6 +15,9 @@ class Wall{
         rotationMatrix.data[1][1] = Math.cos(a)
     
          this.end = rotationMatrix.multiplyVec(this.end.sub(this.pivot)).add(this.pivot)
+
+        this.dir = this.start.sub(this.end)
+
     }
     draw(){
         c.beginPath()
