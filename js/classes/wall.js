@@ -4,6 +4,7 @@ class Wall{
         this.end = new Vector(ex, ey)
         this.angle = 0
         this.pivot = new Vector(sx, sy)
+        this.omega = 0
 
         this.updateAngle(angle)
            }
@@ -30,6 +31,7 @@ class Wall{
     }
     
     update(){
+        this.updateAngle(this.omega)
 
         this.draw()
     }

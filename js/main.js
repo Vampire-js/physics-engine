@@ -31,9 +31,10 @@ balls.push(ball2)
 
 let wallr = new Wall(canvas.width/2 + 100,300,canvas.width/2 - 300 ,600 , 0)
 wallr.updateAngle(-Math.PI/5)
+wallr.omega = Math.PI/100
 
 let walll = new Wall(canvas.width/2 + 300,300,canvas.width/2  ,400 , 0)
-
+walll.omega = Math.PI/300
 
 walls.push(wallr , walll)
 // walls.push(walll)
@@ -59,6 +60,8 @@ walls.map(e => {
     function animate() {
         c.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
     
+        // walll.updateAngle(-Math.PI/50)
+
         // Handle ball-to-ball collisions
         for (let i = 0; i < balls.length; i++) {
             for (let j = i + 1; j < balls.length; j++) {
