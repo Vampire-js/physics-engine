@@ -5,11 +5,11 @@ class Box {
         this.width = width;
         this.height = height;
         this.rotationAngle = 0; 
-        this.omega = 0.01;      
-        this.velocity = new Vector(1, 0);
+        this.omega = 0;      
+        this.velocity = new Vector(0, 0);
         this.accel = new Vector(0, 0);
 
-        this.gravity = 0.05;
+        this.gravity = 0;
 
         this.initializeWalls();
     }
@@ -19,13 +19,27 @@ class Box {
         this.bottom = new Wall(-this.width / 2, this.height / 2, this.width / 2, this.height / 2);
         this.left = new Wall(-this.width / 2, -this.height / 2, -this.width / 2, this.height / 2);
         this.right = new Wall(this.width / 2, -this.height / 2, this.width / 2, this.height / 2);
+    
+    walls.push(this.bottom, this.left ,this.right)
+    }
+
+    rotate(){
+        this.omega = 0.01
     }
 
     draw() {
-        this.top.draw();
-        this.bottom.draw();
-        this.left.draw();
-        this.right.draw();
+     
+
+        this.top.pivot = this.com
+        this.bottom.pivot = this.com
+        this.left.pivot = this.com
+        this.right.pivot = this.com
+    }
+
+    collide(box){
+        //intersection test
+
+        //collision resolution
     }
 
     updateWalls() {
@@ -60,6 +74,15 @@ class Box {
 
         this.updateWalls();
 
+        document.onkeydown = (e) => {
+            if(e.key == "w"){
+                this.rotate()
+            }
+        } 
+
+        document.onkeyup = e => {
+            this.omega = 0
+        }
         this.draw();
     }
 }

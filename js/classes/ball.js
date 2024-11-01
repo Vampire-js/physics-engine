@@ -28,32 +28,44 @@ class Ball {
         c.fillStyle = this.color
         c.fill()
 
-        this.velocity.draw(this.position.x, this.position.y, 40, "red")
+        // this.velocity.draw(this.position.x, this.position.y, 40, "red")
     }
     startRandomMotion(){
         this.velocity.x = Math.random()*[-1,1][Math.round(Math.random())]
         this.velocity.y = Math.random()*[-1,1][Math.round(Math.random())]
     }
-    intersects(other){
-        let d = this.position.sub(other.position).mag()
-        
-        //Collision Resolution
-        
-        if(d  <= -this.velocity.sub(other.velocity).dot(this.position.sub(other.position))*(1/d)+this.r + other.r){
-            let n = this.position.sub(other.position).unit()
-
-            let p = this.velocity.sub(other.velocity).dot(n) * 2 / (this.mass + other.mass)
-            console.log(this.velocity)
-            
-            this.velocity = this.velocity.sub(n.mult(p * this.mass))
-            other.velocity = other.velocity.add(n.mult(p * other.mass))
-
-
-          }
-
+    
+    intersects(other) {
+        let d = this.position.sub(other.position).mag();
+        let minDist = this.r + other.r;
+    
+        if (d < minDist) {
+            // Calculate the collision normal
+            let n = this.position.sub(other.position).unit();
+    
+            // Adjust positions slightly to prevent overlap
+            let overlap = (minDist - d) / 2;
+            this.position = this.position.add(n.mult(overlap));
+            other.position = other.position.sub(n.mult(overlap));
+    
+            // Relative velocity along the normal
+            let relativeVelocity = this.velocity.sub(other.velocity);
+            let velocityAlongNormal = relativeVelocity.dot(n);
+    
+            // Only resolve if balls are moving toward each other
+            if (velocityAlongNormal < 0) {
+                let impulse = (2 * velocityAlongNormal) / (this.mass + other.mass);
+    
+                // Adjust velocities based on impulse and mass
+                this.velocity = this.velocity.sub(n.mult(impulse * other.mass));
+                other.velocity = other.velocity.add(n.mult(impulse * this.mass));
+            }
+        }
     }
+    
 
     collideWall(wall) {
+
         // Define the wall segment as a vector
         let wallVector = wall.end.sub(wall.start);
         let ballToWallStart = this.position.sub(wall.start);
@@ -72,12 +84,16 @@ class Ball {
             let distanceToWall = ballToClosestPoint.mag();
     
             // Check if the ball is within collision range
-            if (distanceToWall <= this.r) {
+            
+            if (distanceToWall <= this.r + wall.omega*wall.start.sub(wall.end).mag()) {
                 // Resolve the collision by moving the ball out and inverting velocity along the normal
                 let collisionNormal = ballToClosestPoint.unit();
+                this.position.add(wall.getNormals().unit().mult( this.r - distanceToWall))
                 this.position = closestPoint.add(collisionNormal.mult(this.r));
                 this.velocity = this.velocity.sub(collisionNormal.mult(2 * this.velocity.dot(collisionNormal))).add(collisionNormal.mult(closestPoint.sub(wall.start).mag()*wall.omega)).mult(.8) // Damping factor
             }
+
+            
         }
     }
     
