@@ -17,7 +17,7 @@ let walls = []
 
 // balls.push(ball1)
 
-let ball1 = new Ball(100,10,20)
+let ball1 = new Ball(400,400,10)
 // ball1.player = true
 ball1.velocity.x = 2
 balls.push(ball1)
@@ -28,25 +28,30 @@ ball2.velocity.y = .1
 balls.push(ball2)
 
 
+let box = new Box(500,400,400,250)
+box.omega = Math.PI/500
+box.draw()
+
 
 let wallr = new Wall(canvas.width/2 + 100,300,canvas.width/2 - 300 ,600 , 0)
 wallr.updateAngle(-Math.PI/5)
-wallr.omega = Math.PI/100
+// wallr.omega = Math.PI/100
 
 let walll = new Wall(canvas.width/2 + 300,300,canvas.width/2  ,400 , 0)
-walll.omega = Math.PI/300
+// walll.pivot = walll.end.mult(.8)
+// walll.omega = Math.PI/100
 
-walls.push(wallr , walll)
+// walls.push(wallr , walll)
 // walls.push(walll)
 
-setInterval(() => {
-    let newbal = new Ball(Math.random()*canvas.width, 0 ,10)
-    newbal.intersects(ball1)
-    newbal.intersects(ball2)
-    newbal.collideWall(walll)
-    newbal.collideWall(wallr)
-    balls.push(newbal)
-},300)
+// setInterval(() => {
+//     let newbal = new Ball(Math.random()*canvas.width, 0 ,10)
+//     newbal.intersects(ball1)
+//     newbal.intersects(ball2)
+//     newbal.collideWall(walll)
+//     newbal.collideWall(wallr)
+//     balls.push(newbal)
+// },300)
 
 balls.map(e => {
 e.draw()
@@ -62,6 +67,7 @@ walls.map(e => {
     
         // walll.updateAngle(-Math.PI/50)
 
+        box.update()
         // Handle ball-to-ball collisions
         for (let i = 0; i < balls.length; i++) {
             for (let j = i + 1; j < balls.length; j++) {

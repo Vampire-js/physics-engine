@@ -76,7 +76,7 @@ class Ball {
                 // Resolve the collision by moving the ball out and inverting velocity along the normal
                 let collisionNormal = ballToClosestPoint.unit();
                 this.position = closestPoint.add(collisionNormal.mult(this.r));
-                this.velocity = this.velocity.sub(collisionNormal.mult(2 * this.velocity.dot(collisionNormal))).add(collisionNormal.mult(closestPoint.sub(wall.end).mag()*wall.omega)); // Damping factor
+                this.velocity = this.velocity.sub(collisionNormal.mult(2 * this.velocity.dot(collisionNormal))).add(collisionNormal.mult(closestPoint.sub(wall.start).mag()*wall.omega)).mult(.8) // Damping factor
             }
         }
     }

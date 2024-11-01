@@ -16,6 +16,7 @@ class Wall{
         rotationMatrix.data[1][1] = Math.cos(a)
     
          this.end = rotationMatrix.multiplyVec(this.end.sub(this.pivot)).add(this.pivot)
+         this.start = rotationMatrix.multiplyVec(this.start.sub(this.pivot)).add(this.pivot)
 
         this.dir = this.start.sub(this.end)
 
