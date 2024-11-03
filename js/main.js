@@ -14,45 +14,63 @@ let walls = [];
 // box.draw()
 
 
-let box = new Box(200,200,166,150)
-box.draw()
+// let box = new Box(300,400,566,550)
+// box.draw()
 
 
 let balls = []
-let loop = setInterval(() => {
-    if(balls.length <= 500){
-    let newbal = new Ball(180 + Math.random()*50, 0 ,3)
-    newbal.color = "rgba(0,0,255,.3)"
-    newbal.stroke = "rgba(0,0,255,.3)"
-    newbal.damping = .5
-    // newbal.intersects(ball1)
-    // newbal.intersects(ball2)
-    // newbal.collideWall(walll)
-    // newbal.collideWall(wallr)
+// let loop = setInterval(() => {
+//     if(balls.length <= 1000){
+//     let newbal = new Ball(180 + Math.random()*50, 200 ,10)
+//     newbal.color = `rgba(${100+Math.random()*155},${100+Math.random()*155},${200+Math.random()*155},.3)`
+//     newbal.stroke = `rgba(${100+Math.random()*155},${100+Math.random()*155},${200+Math.random()*155},.3)`
+//     newbal.damping = .5
+//     newbal.mass = .5
+//     // newbal.intersects(ball1)
+//     // newbal.intersects(ball2)
+//     // newbal.collideWall(walll)
+//     // newbal.collideWall(wallr)
    
-    balls.push(newbal)
-    }
-    // console.log(balls.length)
-},30)
+//     balls.push(newbal)
+//     }
+//     // console.log(balls.length)
+// },3)
 
 
-let player = new Ball(500,200,20)
-player.player = true
-player.gravity = 0
+// let player = new Ball(500,-20040,30)
+// player.mass = 10
+// player.player = false
+// player.color = "red"
 
-balls.push(player)
 
+// balls.push(player)
+
+
+const ball = new Ball(200,300,20)
+// ball.gravity = 0
+// ball.player = true
+
+balls.push(ball)
+
+const spring = new Spring(200,200,200)
+spring.draw()
 
 function animate() {
-    c.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-
+    c.fillStyle = "white"
+    c.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    
     // Handle wall collisions
 //    walll.collides(wallr)
 //    wallr.collides(walll)
 
 // player.update()
-   box.update()
+//    box.update()
     // Update and draw walls
+
+    
+    spring.update()
+
+spring.hook(ball)
 
     for (let ball of balls) {
         ball.update();
@@ -62,6 +80,8 @@ function animate() {
             }
         }
     }
+// ball.applyForce(new Vector(.0004,0))
+
 
     for (let wall of walls) {
         wall.update();

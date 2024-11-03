@@ -102,6 +102,14 @@ class Ball {
         }
     }
     
+    applyForce(f){
+        let currForce = this.acc.mult(this.mass)
+        let resultant = currForce.add(f)
+
+        this.acc = new Vector(resultant.x/this.mass , resultant.y/this.mass).mult(1/120)
+
+        
+    }
     
     setColor(color){
         this.color = color
