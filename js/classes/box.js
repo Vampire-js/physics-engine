@@ -24,7 +24,7 @@ class Box {
     }
 
     rotate(){
-        this.omega = 0.01
+        this.omega = 0
     }
 
     draw() {

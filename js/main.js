@@ -14,13 +14,17 @@ let walls = [];
 // box.draw()
 
 
-let box = new Box(200,200,156,100)
+let box = new Box(200,200,166,150)
 box.draw()
+
 
 let balls = []
 let loop = setInterval(() => {
     if(balls.length <= 500){
-    let newbal = new Ball(180 + Math.random()*50, 0 ,2)
+    let newbal = new Ball(180 + Math.random()*50, 0 ,3)
+    newbal.color = "rgba(0,0,255,.3)"
+    newbal.stroke = "rgba(0,0,255,.3)"
+    newbal.damping = .5
     // newbal.intersects(ball1)
     // newbal.intersects(ball2)
     // newbal.collideWall(walll)
@@ -32,6 +36,12 @@ let loop = setInterval(() => {
 },30)
 
 
+let player = new Ball(500,200,20)
+player.player = true
+player.gravity = 0
+
+balls.push(player)
+
 
 function animate() {
     c.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
@@ -40,6 +50,7 @@ function animate() {
 //    walll.collides(wallr)
 //    wallr.collides(walll)
 
+// player.update()
    box.update()
     // Update and draw walls
 

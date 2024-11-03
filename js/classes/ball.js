@@ -8,7 +8,9 @@ class Ball {
         this.velocity = new Vector(0, 0)
         this.acc = new Vector(0, 0)
         this.color = "transparent"
+        this.stroke = "black"
         this.player = false
+        this.damping = .8
         this.randomMotion = false
         this.hightlight = false
         this.mass = 1
@@ -23,7 +25,7 @@ class Ball {
     draw() {
         c.beginPath()
         c.arc(this.position.x, this.position.y, this.r, 0, 2 * Math.PI)
-        c.strokeStyle = "black"
+        c.strokeStyle = this.stroke
         c.stroke()
         c.fillStyle = this.color
         c.fill()
@@ -57,7 +59,10 @@ class Ball {
                 let impulse = (2 * velocityAlongNormal) / (this.mass + other.mass);
     
                 // Adjust velocities based on impulse and mass
-                this.velocity = this.velocity.sub(n.mult(impulse * other.mass));
+                if(!this.player){
+                    this.velocity = this.velocity.sub(n.mult(impulse * other.mass));
+
+                }
                 other.velocity = other.velocity.add(n.mult(impulse * this.mass));
             }
         }
@@ -90,7 +95,7 @@ class Ball {
                 let collisionNormal = ballToClosestPoint.unit();
                 this.position.add(wall.getNormals().unit().mult( this.r - distanceToWall))
                 this.position = closestPoint.add(collisionNormal.mult(this.r));
-                this.velocity = this.velocity.sub(collisionNormal.mult(2 * this.velocity.dot(collisionNormal))).add(collisionNormal.mult(closestPoint.sub(wall.start).mag()*wall.omega)).mult(.8) // Damping factor
+                this.velocity = this.velocity.sub(collisionNormal.mult(2 * this.velocity.dot(collisionNormal))).add(collisionNormal.mult(closestPoint.sub(wall.start).mag()*wall.omega)).mult(this.damping) // Damping factor
             }
 
             
