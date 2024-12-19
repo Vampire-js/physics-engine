@@ -1,97 +1,112 @@
-const canvas = document.getElementById("canvas")
-const c = canvas.getContext("2d")
-canvas.width = innerWidth
-canvas.height = innerHeight
+const canvas = document.getElementById("canvas");
+const c = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
 
-let x = 100
-let y = 100
+let walls = [];
+// let wallr = new Wall(canvas.width / 2 + 100, 300, canvas.width / 2 - 300, 600, 0);
+// let walll = new Wall(canvas.width / 2 + 300, 300, canvas.width / 2, 400, 0);
+// walll.omega = Math.PI / 200; // Set initial rotation speed
+// walls.push(wallr, walll);
 
-let LEFT, UP, RIGHT, DOWN
+
+// let box = new Box(300,300,100,100)
+// box.draw()
+
+
+// let box = new Box(300,400,566,550)
+// box.draw()
+
 
 let balls = []
-let walls = []
-
-
-
-
-
-// balls.push(ball1)
-
-// let ball1 = new Ball(400,400,10)
-// // ball1.player = true
-// ball1.velocity.x = 2
-// balls.push(ball1)
-
-// let ball2 = new Ball(500,10,20)
-// // ball1.player = true
-// ball2.velocity.y = .1
-// balls.push(ball2)
-
-
-let box = new Box(400,400,150,150)
-box.omega = Math.PI/100
-box.velocity.y = -4
-box.draw()
-
-
-let wallr = new Wall(canvas.width/2 + 100,300,canvas.width/2 - 300 ,600 , 0)
-wallr.updateAngle(-Math.PI/5)
-// wallr.omega = Math.PI/100
-
-let walll = new Wall(canvas.width/2 + 300,300,canvas.width/2  ,400 , 0)
-// walll.pivot = walll.end.mult(.8)
-// walll.omega = Math.PI/100
-
-// walls.push(wallr , walll)
-// walls.push(walll)
-
-// setInterval(() => {
-//     let newbal = new Ball(Math.random()*canvas.width, 0 ,10)
-//     newbal.intersects(ball1)
-//     newbal.intersects(ball2)
-//     newbal.collideWall(walll)
-//     newbal.collideWall(wallr)
+// let loop = setInterval(() => {
+//     if(balls.length <= 1000){
+//     let newbal = new Ball(180 + Math.random()*50, 200 ,10)
+//     newbal.color = `rgba(${100+Math.random()*155},${100+Math.random()*155},${200+Math.random()*155},.3)`
+//     newbal.stroke = `rgba(${100+Math.random()*155},${100+Math.random()*155},${200+Math.random()*155},.3)`
+//     newbal.damping = .5
+//     newbal.mass = .5
+//     // newbal.intersects(ball1)
+//     // newbal.intersects(ball2)
+//     // newbal.collideWall(walll)
+//     // newbal.collideWall(wallr)
+   
 //     balls.push(newbal)
-// },300)
-
-balls.map(e => {
-e.draw()
-})
-
-walls.map(e => {
-    e.draw()
-    })
+//     }
+//     // console.log(balls.length)
+// },3)
 
 
-    function animate() {
-        c.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+// let player = new Ball(500,-20040,30)
+// player.mass = 10
+// player.player = false
+// player.color = "red"
+
+
+// balls.push(player)
+
+
+
+let qt = new QuadTree(new Rectangle(200,200,200,200), 4)
+
+
+
+
+for(let i=0; i<10; i++){
+
+    const ball = new Ball(10+i*40,10+i*40,10)
+    // ball.gravity = 0
+    // ball.player = true
+    ball.randomMotion = true
+console.log(ball.position)
+    qt.insert(ball.position)
     
-        // walll.updateAngle(-Math.PI/50)
-        box.update()
+    balls.push(ball)
 
-        // Handle ball-to-ball collisions
-        for (let i = 0; i < balls.length; i++) {
-            for (let j = i + 1; j < balls.length; j++) {
-                balls[i].intersects(balls[j]);
+
+
+}
+
+console.log(qt)
+
+
+
+function animate() {
+    c.fillStyle = "white"
+    c.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    
+    // Handle wall collisions
+//    walll.collides(wallr)
+//    wallr.collides(walll)
+
+// player.update()
+//    box.update()
+    // Update and draw walls
+
+    
+    // spring.update()
+
+// spring.hook(ball)
+
+    for (let ball of balls) {
+        ball.update();
+        for (let b of balls) {
+            if( b != ball) {
+                // b.intersects(ball)
             }
         }
-    
-        // Handle wall collisions
-        for (let wall of walls) {
-            for (let ball of balls) {
-                ball.collideWall(wall);
-            }
-            wall.update();
-        }
-    
-        // Update positions after all collisions are resolved
-        for (let ball of balls) {
-            ball.update();
-        }
-     
-    
-        requestAnimationFrame(animate);
     }
-    
+// ball.applyForce(new Vector(.0004,0))
 
-animate()
+
+    for (let wall of walls) {
+        wall.update();
+        for (let ball of balls) {
+        ball.collideWall(wall)
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();

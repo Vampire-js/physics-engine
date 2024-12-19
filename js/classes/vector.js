@@ -36,6 +36,9 @@ class Vector {
     dot(v){
         return this.x*v.x + this.y*v.y
     }
+    cross(v){
+        return this.x * v.y - this.y * v.x
+    }
     draw(start_x, start_y, n, color) {
         c.beginPath()
         c.moveTo(start_x, start_y)
