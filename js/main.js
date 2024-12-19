@@ -46,14 +46,30 @@ let balls = []
 // balls.push(player)
 
 
-const ball = new Ball(200,300,20)
-// ball.gravity = 0
-// ball.player = true
 
-balls.push(ball)
+let qt = new QuadTree(new Rectangle(200,200,200,200), 4)
 
-const spring = new Spring(200,200,200)
-spring.draw()
+
+
+
+for(let i=0; i<10; i++){
+
+    const ball = new Ball(10+i*40,10+i*40,10)
+    // ball.gravity = 0
+    // ball.player = true
+    ball.randomMotion = true
+console.log(ball.position)
+    qt.insert(ball.position)
+    
+    balls.push(ball)
+
+
+
+}
+
+console.log(qt)
+
+
 
 function animate() {
     c.fillStyle = "white"
@@ -68,15 +84,15 @@ function animate() {
     // Update and draw walls
 
     
-    spring.update()
+    // spring.update()
 
-spring.hook(ball)
+// spring.hook(ball)
 
     for (let ball of balls) {
         ball.update();
         for (let b of balls) {
             if( b != ball) {
-                b.intersects(ball)
+                // b.intersects(ball)
             }
         }
     }
