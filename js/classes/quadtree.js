@@ -48,7 +48,7 @@ class QuadTree {
     }
 
     insert(point) {
-        console.log("hi")
+       
                 if(!this.boundary.contains(point)){
                     return
                 }
