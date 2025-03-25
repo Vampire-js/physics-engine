@@ -42,23 +42,18 @@ class Ball {
         let minDist = this.r + other.r;
     
         if (d < minDist) {
-            // Calculate the collision normal
             let n = this.position.sub(other.position).unit();
     
-            // Adjust positions slightly to prevent overlap
             let overlap = (minDist - d) / 2;
             this.position = this.position.add(n.mult(overlap));
             other.position = other.position.sub(n.mult(overlap));
     
-            // Relative velocity along the normal
             let relativeVelocity = this.velocity.sub(other.velocity);
             let velocityAlongNormal = relativeVelocity.dot(n);
     
-            // Only resolve if balls are moving toward each other
             if (velocityAlongNormal < 0) {
                 let impulse = (2 * velocityAlongNormal) / (this.mass + other.mass);
     
-                // Adjust velocities based on impulse and mass
                 if(!this.player){
                     this.velocity = this.velocity.sub(n.mult(impulse * other.mass));
 
@@ -71,27 +66,20 @@ class Ball {
 
     collideWall(wall) {
 
-        // Define the wall segment as a vector
         let wallVector = wall.end.sub(wall.start);
         let ballToWallStart = this.position.sub(wall.start);
     
-        // Project the ball’s position onto the wall segment
         let projectionLength = ballToWallStart.dot(wallVector.unit());
         let wallLength = wallVector.mag();
-    
-        // Check if the projection is within the bounds of the wall segment
+
         if (projectionLength >= 0 && projectionLength <= wallLength) {
-            // Find the closest point on the wall to the ball
             let closestPoint = wall.start.add(wallVector.unit().mult(projectionLength));
     
-            // Calculate the vector from the ball to this closest point
             let ballToClosestPoint = this.position.sub(closestPoint);
             let distanceToWall = ballToClosestPoint.mag();
     
-            // Check if the ball is within collision range
             
             if (distanceToWall <= this.r + wall.omega*wall.start.sub(wall.end).mag()) {
-                // Resolve the collision by moving the ball out and inverting velocity along the normal
                 let collisionNormal = ballToClosestPoint.unit();
                 this.position.add(wall.getNormals().unit().mult( this.r - distanceToWall))
                 this.position = closestPoint.add(collisionNormal.mult(this.r));
@@ -152,20 +140,16 @@ class Ball {
     update() {
         this.draw();
     
-        // Check and resolve collisions with all walls before updating position
         for (let wall of walls) {
             this.collideWall(wall);
         }
     
-        // Apply position updates based on velocity
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     
-        // Update velocity with acceleration
         this.velocity.x += this.acc.x;
         this.velocity.y += this.acc.y;
     
-        // Gravity on the y-axis
         this.acc.y = this.gravity;
     
         if (this.randomMotion) {
